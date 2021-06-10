@@ -6,6 +6,7 @@ from scipy.spatial.distance import cdist
 
 from embeddings import vector_by_words, preprocess
 
+
 def append_each(a, to):
     for n in a:
         n = n.strip()
@@ -14,7 +15,7 @@ def append_each(a, to):
                 to.append(n.replace('"', "").replace(" ", "_"))
 
 
-def my_people(interests):
+def my_people(interests, gender):
     spliter = re.compile(r'[;,]|\"\"| и ')
     deleter = re.compile(r'[!()\[\]{}\\<>/?@#$%^*_~:.-]')
     item = re.split(spliter, re.sub(deleter, '', interests.lower()))
@@ -32,18 +33,23 @@ def my_people(interests):
         nearest = ans.iloc[np.argsort(my_matrix, axis=0)[:3].reshape(1, 3)[0]]
         female_nearest = ans.iloc[np.argsort(my_female_matrix, axis=0)[:3].reshape(1, 3)[0]]
         male_nearest = ans.iloc[np.argsort(my_male_matrix, axis=0)[:3].reshape(1, 3)[0]]
-        print(nearest)
-        print(female_nearest)
-        print(male_nearest)
-        return nearest
+        if gender == "na":
+            return nearest
+        elif gender == "f":
+            return female_nearest
+        elif gender == "m":
+            return male_nearest
     else:
-        print(without_interest.head(3))
-        print(without_interest_female.head(3))
-        print(without_interest_male.head(3))
-        return without_interest.head(3)
+        if gender == "na":
+            return without_interest.head(3)
+        elif gender == "f":
+            return without_interest_female.head(3)
+        elif gender == "m":
+            return without_interest_male.head(3)
 
 
-if __name__ == "main":
-    ans = pd.DataFrame("interests.csv")
+if __name__ == "__main__":
+    ans = pd.read_csv("interests.csv")
+    ans = ans.fillna("")
     vectors, male_vectors, female_vectors = preprocess(ans)
-    my_people("велик")
+    print(my_people("велик", "na"))

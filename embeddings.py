@@ -4,7 +4,7 @@ import numpy as np
 import fasttext.util as fu
 import fasttext
 
-ft = fasttext.load_model('C:/Users/azali/cc.ru.300.bin') #прописать свой путь к Fasttext
+ft = fasttext.load_model('cc.ru.300.bin') #прописать свой путь к Fasttext
 fu.download_model('ru', if_exists='ignore')
 
 
