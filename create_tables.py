@@ -26,9 +26,7 @@ def group_similar(words):
         elif word == "рисовать":
             temp.append("рисование")
         elif word == "танцами":
-            temp.append("фильмы")
-        elif word == "танцы":
-            temp.append("фильмы")
+            temp.append("танцы")
         elif word == "картинг":
             temp.append("гонки")
         elif word == "игры":
