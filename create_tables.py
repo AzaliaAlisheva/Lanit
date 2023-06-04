@@ -1,4 +1,4 @@
-#imports
+# imports
 import pandas as pd
 import numpy as np
 import re
@@ -13,38 +13,42 @@ def append_each(a, to):
 
 
 def group_similar(words):
-    temp = []
+    temp = set()
     for word in words:
         if word == "кино":
-            temp.append("фильмы")
-        elif word == "авто":
-            temp.append("автомобили")
-        elif word == "фото":
-            temp.append("фотография")
+            temp.add("фильмы")
+        elif word.find("авто") != -1 or word == "картинг" or word == "гонки":
+            temp.add("автомобили")
+        elif word.find("фото") != -1:
+            temp.add("фотография")
         elif word == "книги" or word == "литература":
-            temp.append("чтение")
-        elif word == "рисовать":
-            temp.append("рисование")
-        elif word == "танцами":
-            temp.append("танцы")
-        elif word == "картинг":
-            temp.append("гонки")
-        elif word == "игры":
-            temp.append("компьютерные_игры")
+            temp.add("чтение")
+        elif word.find("рисова") != -1:
+            temp.add("рисование")
+        elif word.find("танц") != -1:
+            temp.add("танцы")
+        elif word == "гейминг" or ((word.find("комп") != -1 or word.find("видео") != -1) and word.find("игры") != -1):
+            temp.add("компьютерные_игры")
+        elif word.find("фантастик") != -1:
+            temp.add("фантастикa")
+        elif word.find("программирова") != -1:
+            temp.add("программирование")
+        elif word.find("спорт") != -1:
+            temp.add("спорт")
         else:
-            temp.append(word)
+            temp.add(word)
     temp = list(dict.fromkeys(temp))
     return " ".join(temp)
 
 
-#считывание
+# считывание
 users = pd.read_csv("users.csv", encoding="windows-1251", index_col=0, header=None)\
     .rename({1: "Пол"}, axis=1).replace({"муж": 1, "жен": 0})
 users.index = users.index.map(str)
 questionary = pd.read_json("questionary-2.json")
-headers = pd.DataFrame(data = questionary["questions"][0]).text
+headers = pd.DataFrame(data=questionary["questions"][0]).text
 
-#создание таблицы
+# создание таблицы
 ans = pd.DataFrame(columns=["Интересы", "Фильмы", "Книги", "Музыка", "Хобби"])
 spliter_bm = re.compile(r'[;]')
 spliter_else = re.compile(r'[;,]')
@@ -93,11 +97,11 @@ ans.loc["1067845477"]["Фильмы"] = "пророк_моисей_вождьо�
 ans.loc["209077883"]["Фильмы"] = "душа джентльмены"
 ans.loc["210993200"]["Фильмы"] = "властелин_колец"
 ans.loc["667461959"]["Фильмы"] = np.nan
-ans.loc["1780039089"]["Интересы"] = "бег чтение гамбургеры"
+ans.loc["1780039089"]["Интересы"] = "бег чтение еда"
 ans.loc["206408920"]["Хобби"] = "бег"
 
 ans = pd.merge(ans, users, how="left", left_index=True, right_index=True)
-ans["Все интересы"] = ans["Интересы"]+" "+ans["Хобби"]
+ans["Все интересы"] = ans["Интересы"] + " " + ans["Хобби"]
 
 ans["Все интересы"] = ans["Все интересы"].map(lambda x: group_similar(x.split()))
 ans["Кол-во интересов"] = ans["Все интересы"].map(lambda x: len(x.split()))

@@ -50,6 +50,6 @@ def my_people(interests, gender):
 
 if __name__ == "__main__":
     ans = pd.read_csv("interests.csv")
-    ans = ans.fillna("")
+    ans = ans.dropna(subset=["Все интересы"])
     vectors, male_vectors, female_vectors = preprocess(ans)
     print(my_people("велик", "na"))

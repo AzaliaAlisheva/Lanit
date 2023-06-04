@@ -104,6 +104,6 @@ def find_music(user: User):
 if __name__ == '__main__':
     # Run server using given host and port
     ans = pd.read_csv("interests.csv")
-    ans = ans.fillna("")
+    ans = ans.dropna(subset=["Все интересы"])
     vectors, male_vectors, female_vectors = preprocess(ans)
     uvicorn.run(app, host='127.0.0.1', port=80)
